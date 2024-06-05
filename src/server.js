@@ -14,6 +14,10 @@ import { APIs_v1 } from '~/routes/v1'
 const START_SERVER = () => {
   const app = express()
 
+  // Enable receiving JSON request from data
+  app.use(express.json())
+
+  // Sử dụng API v1
   app.use('/v1', APIs_v1)
 
   app.listen(env.APP_PORT, env.APP_HOST, () => {
