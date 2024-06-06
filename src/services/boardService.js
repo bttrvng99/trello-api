@@ -1,10 +1,5 @@
-/**
- * Updated by trungquandev.com's author on August 17 2023
- * YouTube: https://youtube.com/@trungquandev
- * 'A bit of fragrance clings to the hand that gives flowers!'
- */
-
 import { slugify } from '~/utils/formatters'
+import { boardModel } from '~/models/boardModel'
 
 const createNew = async (reqBody) => {
   // eslint-disable-next-line no-useless-catch
@@ -16,13 +11,18 @@ const createNew = async (reqBody) => {
     }
 
     // Gọi tới tâng Model để xử lý lưu bản ghi newBoard vào trong Database
-    // ...
+    const createdBoard = await boardModel.createNew(newBoard)
+    console.log(createdBoard)
+
+    // Lấy bản ghi board sau khi gọi (tuỳ vào mục đích dự án có bước này hay không)
+    const getNewBoard = await boardModel.findOneById(createdBoard.insertedId)
+    console.log(getNewBoard)
 
     // Làm thêm các xử lý logic khác với các Collection khác tuỳ đặc thù dự án...
     // Bắn email, notification về cho admin khi có 1 board mới được tạo
 
     // Trả kết quả về trong Service luôn phải có return
-    return newBoard
+    return getNewBoard
   } catch (error) { throw error }
 }
 
