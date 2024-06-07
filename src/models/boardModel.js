@@ -38,14 +38,22 @@ const findOneById = async (id) => {
   try {
     const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOne({ _id: new ObjectId(id) })
     return result
-  } catch (error) {
-    throw new Error(error)
-  }
+  } catch (error) { throw new Error(error) }
+}
+
+// Query tổng hợp để lấy toàn bộ columns và card thuộc về board
+const getDetails = async (id) => {
+  try {
+    // Tạm thời copy lại hàm findOneById - và sẽ update phần aggregate tiếp ở những video tới
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOne({ _id: new ObjectId(id) })
+    return result
+  } catch (error) { throw new Error(error) }
 }
 
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
   createNew,
-  findOneById
+  findOneById,
+  getDetails
 }
