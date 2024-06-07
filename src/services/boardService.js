@@ -2,6 +2,10 @@ import { slugify } from '~/utils/formatters'
 import { boardModel } from '~/models/boardModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
+import {
+  cloneDeep
+  // forEach
+} from 'lodash'
 
 const createNew = async (reqBody) => {
   // eslint-disable-next-line no-useless-catch
@@ -36,7 +40,21 @@ const getDetails = async (boardId) => {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found!')
     }
 
-    return board
+    // B1: Deep clone board ra một cái mới để xử lý, không ảnh hưởng đến board ban đầu, tuỳ mục đích về sau có cần clone deep hay không (video 63)
+    const resBoard = cloneDeep(board)
+    // B2: Đưa card về đúng column của nó
+    resBoard.columns.forEach(column => {
+      // Cách dùng .equals là vì chúng hiểu ObjectId trong MongoDB có hỗ trợ method .equals
+      column.cards = resBoard.cards.filter(card => card.columnId.equals(column._id))
+
+      // // Cách khác đơn giản là convert ObjectId về String bằng hàm toString() của JavaScript
+      // column.cards = resBoard.cards.filter(card => card.columnId.toString() === column._id.toString())
+    })
+
+    // B3: Xoá mảng card khỏi board ban đầu
+    delete resBoard.cards
+
+    return resBoard
   } catch (error) { throw error }
 }
 
